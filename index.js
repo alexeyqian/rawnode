@@ -5,10 +5,33 @@
 // dependencies
 const { stat } = require('fs');
 const http = require('http');
+const https = require('https');
 const url = require('url');
 const StringDecoder = require('string_decoder').StringDecoder;
+const config = require('./config');
+const fs = require('fs');
 
-var server = http.createServer(function(req, res){
+const httpServer = http.createServer(function(req, res){
+        unifiedServer(req,res);
+});
+
+httpServer.listen(config.httpPort, function(){
+    console.log("The server is listening on port " + config.httpPort);
+});
+
+const httpsServerOptions = {
+    'key': fs.readFileSync('./https/key.pem'),
+    'cert': fs.readFileSync('./https/cert.pem')
+};
+const httpsServer = https.createServer(httpsServerOptions, function(req, res){
+    unifiedServer(req, res);
+});
+httpsServer.listen(config.httpsPort, function(){
+    console.log("The server is listening on port " + config.httpsPort);
+});
+
+
+const unifiedServer = function(req, res){
     const parsedUrl = url.parse(req.url, true);
     const path = parsedUrl.pathname;
     const trimmedPath = path.replace(/^\/+|\/+$/g,'');
@@ -56,20 +79,16 @@ var server = http.createServer(function(req, res){
             //console.log('query: ' + queryStringObject);
             console.log('return this payload back: ', payloadString);    
         });
-    });    
-});
-
-server.listen(3000, function(){
-    console.log("The server is listening on port 3000");
-});
+    });
+};
 
 
 // define handlers
 var handlers = {};
-hendlers.sample = function(data, callback){
-    // callback a http status code, and a payload object
-    callback(406, {'name': 'sample hander'});
-};
+
+handlers.ping = function(data, callback){
+    callback(200);
+}
 
 handlers.notFound = function(data, callback){
     callback(404);
@@ -77,5 +96,5 @@ handlers.notFound = function(data, callback){
 
 // define a request router
 const router = {
-    'sample': handlers.sample
+    'ping': handlers.ping
 };
