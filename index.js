@@ -10,6 +10,7 @@ const url = require('url');
 const StringDecoder = require('string_decoder').StringDecoder;
 const config = require('./config');
 const fs = require('fs');
+const _data = require('./lib/data');
 
 const httpServer = http.createServer(function(req, res){
         unifiedServer(req,res);
