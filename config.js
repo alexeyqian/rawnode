@@ -3,13 +3,15 @@ var environments = {};
 environments.staging = {
     'httpPort': 3000,
     'httpsPort' : 3001,
-    'evnName': 'staging'
+    'evnName': 'staging',
+    'hashingSecret': 'asfdasltj'
 };
 
 environments.production = {
     'httpPort': 5000,
     'httpsPort' : 50001,
-    'evnName': 'production'
+    'evnName': 'production',
+    'hashingSecret': 'xdu0urjf;f'
 };
 
 var currentEnvironment = type(process.env.NODE_ENV) == 'string' ? process.env.NODE_ENV.toLowerCase() : '';
